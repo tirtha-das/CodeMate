@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
     firstName:{
@@ -26,8 +28,6 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String,
         require:[true,"Password is required"],
-        minlength:[8,"Length of password shoud be between 8 and 25"],
-        maxlength:[25,"Length of password shoud be between 8 and 25"],
         validate:[function(value){
             return validator.isStrongPassword(value);
         },"Password is not Strong"]
@@ -50,9 +50,30 @@ const userSchema = new mongoose.Schema({
         validate:[function(value){
             return (validator.isURL(value) && (/\.(jpeg|jpg|png|gif|webp|svg)$/i.test(value)));
         },"PhotoURL is not valid"]
-    }
+    },
+    about:{
+        type:String,
+        maxlength:[500,"About section shouldn't be contain more than 500 words including space"],
+    },
+    skills:[{
+        type:String,
+    }]
 })
 
+userSchema.methods.getJWT = function(){
+   
+    const token = jwt.sign({_id:this._id},process.env.JWT_SECRET,{expiresIn:"1D"});
+    return token;    
+
+}
+
+userSchema.methods.passwordValidation = async function(passwordFromInput){
+    const passwordHash = this.password;
+
+    const isPasswordValid = await bcrypt.compare(passwordFromInput,passwordHash);
+    return isPasswordValid
+
+}
 
 const User = mongoose.model("User",userSchema);
 
