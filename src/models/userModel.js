@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { PHOTOURL_END_REGEX, GENDER_POSSIBLE_VALUE } = require("../config/constant");
 
 const userSchema = new mongoose.Schema({
     firstName:{
@@ -40,15 +41,14 @@ const userSchema = new mongoose.Schema({
     gender:{
         type:String,
         validate:[function(value){
-           const possibleValue=["male","female","other"];
-           return possibleValue.includes(value);
+          return GENDER_POSSIBLE_VALUE.includes(value);
         },"Gender is not valid"]
     },
     photoURL:{
         type:String,
         default:"https://cdn-icons-png.flaticon.com/256/9572/9572778.png",
         validate:[function(value){
-            return (validator.isURL(value) && (/\.(jpeg|jpg|png|gif|webp|svg)$/i.test(value)));
+            return (validator.isURL(value) && (PHOTOURL_END_REGEX.test(value)));
         },"PhotoURL is not valid"]
     },
     about:{
