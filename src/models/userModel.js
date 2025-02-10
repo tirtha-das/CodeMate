@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema({
     },
     about:{
         type:String,
-        maxlength:[500,"About section shouldn't be contain more than 500 words including space"],
+        maxlength:[250,"About section shouldn't be contain more than 500 words including space"],
     },
     skills:[{
         type:String,

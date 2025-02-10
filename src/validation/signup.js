@@ -9,7 +9,7 @@ const signupDataValidation = function(firstName,lastName,emailId,password){
         }
         const isValidLastName = nameValidator.test(lastName);
         if(!isValidLastName){
-            throw new Error("last Name is not valid");
+            throw new Error("Last Name is not valid");
         }
        
         if(!validator.isEmail(emailId)){

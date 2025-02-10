@@ -3,6 +3,7 @@ const { User } = require("../models/userModel");
 const { signupDataValidation } = require("../validation/signup");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
+const {USER_SAFE_DATA} = require("../config/constant")
 
 
 
@@ -26,8 +27,18 @@ authRouter.post("/signup",async(req,res)=>{
 
     const token = await newUser.getJWT();
 
+    const safeFields = USER_SAFE_DATA.split(" ");
+    const userData = {}
+    safeFields.forEach((field)=>{
+        if(newUser[field]!==undefined){
+            userData[field] = newUser[field];
+        }
+    })
+
     res.cookie("token",token);
-    res.send("Data saved successfully");
+    res.json({message:"Data saved successfully",
+              data:userData
+    });
 
     }catch(err){
         
@@ -68,11 +79,21 @@ authRouter.post("/login",async(req,res)=>{
 
        const token = tobeLoggedInUser.getJWT();
        res.cookie("token",token);
-       res.send("Successfully logged in");
+       const safeFields = USER_SAFE_DATA.split(" ");
+       const userData = {};
+       safeFields.forEach(field => {
+        if (tobeLoggedInUser[field] !== undefined) {
+        userData[field] = tobeLoggedInUser[field];
+      }
+     });
+
+       res.json({message:"Successfully logged in",
+                  data:userData
+       });
 
        
     }catch(err){
-        res.status(401).send(err.message)
+        res.status(401).json({data:[err.message]})
     }
 })
 
