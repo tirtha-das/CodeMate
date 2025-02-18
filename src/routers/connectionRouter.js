@@ -88,16 +88,23 @@ connectionRouter.patch('/request/profilereview/:status/:toUserId',userAuth,async
         throw new Error("No connection found");
       }
       if(status==="blocked"){
-        if(!connectiontobeModified.blockedBy){
-            connectiontobeModified.blockedBy = loggedInUser._id;
+        if(!connectiontobeModified.blockedBy.includes(loggedInUser._id)){
+            connectiontobeModified.blockedBy.push(loggedInUser._id);
             await connectiontobeModified.save();
             res.send(`you have blocked ${toUserId}`);
         }else{
             throw new Error("You have made a invalid request");
         }
       }else{
-        if(connectiontobeModified.blockedBy && connectiontobeModified.blockedBy.toString()===loggedInUser._id.toString()){
-            connectiontobeModified.blockedBy = null;
+        if(connectiontobeModified.blockedBy.length && connectiontobeModified.blockedBy.includes(loggedInUser._id)){
+           const blockList =  connectiontobeModified.blockedBy.filter((userId)=>{
+                return (userId.toString()!==loggedInUser._id.toString());
+           })
+          // console.log(blockList);
+           
+            connectiontobeModified.set({
+                blockedBy:blockList
+            })
             await connectiontobeModified.save();
             res.send(`you have unblocked ${toUserId}`);
         }else{

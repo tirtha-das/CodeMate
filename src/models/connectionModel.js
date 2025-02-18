@@ -19,11 +19,11 @@ const connectionSchema = new mongoose.Schema({
         },
         required:true
       },
-      blockedBy:{
+      blockedBy:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
-        default:null
-      }
+        default: []
+      }]
 })
 
 const Connections  = mongoose.model("Connections",connectionSchema);

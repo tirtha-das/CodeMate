@@ -38,6 +38,7 @@ userRouter.get("/user/request/received",userAuth,async(req,res)=>{
 userRouter.get("/user/connections",userAuth,async(req,res)=>{
     try{
         const {loggedInUser} = req.body;
+        
        
         const data = await Connections.find({
             $or:[{fromUserId:loggedInUser._id,status:"accepted"},
@@ -50,11 +51,17 @@ userRouter.get("/user/connections",userAuth,async(req,res)=>{
             select:USER_SAFE_DATA
         })
 
+       // console.log(data);
+        
+
         const friendList = data.map((friend)=>{
-            if(friend.fromUserId._id.toString()===loggedInUser._id.toString()){
-                return friend.toUserId;
+           // console.log(friend);
+            const {fromUserId,toUserId,blockedBy} = friend;
+            
+            if(fromUserId._id.toString()===loggedInUser._id.toString()){
+                return {...toUserId.toObject(),blockedBy};
             }else{
-                return friend.fromUserId;
+                return {...fromUserId.toObject(),blockedBy};
             }
         })
 
