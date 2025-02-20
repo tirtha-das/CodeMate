@@ -86,6 +86,7 @@ authRouter.post("/login",async(req,res)=>{
         userData[field] = tobeLoggedInUser[field];
       }
      });
+     userData["_id"]=tobeLoggedInUser._id
 
        res.json({message:"Successfully logged in",
                   data:userData
