@@ -7,6 +7,8 @@ const {authRouter} = require("./routers/authRouter");
 const {connectionRouter} = require("./routers/connectionRouter");
 const { profileRouter } = require('./routers/profileRouter');
 const { userRouter } = require('./routers/userRouter');
+const http = require("http");
+const {initailizeServer} = require('./config/socket');
 
 
 
@@ -28,12 +30,14 @@ app.use("/",connectionRouter);
 app.use("/",profileRouter);
 app.use("/",userRouter);
 
+const server = http.createServer(app);
 
+initailizeServer(server);
 
 
 connectDB().then(async()=>{
     console.log("Database Connected successfully");
-    app.listen(7777,"0.0.0.0",()=>{
+    server.listen(7777,()=>{
         console.log("server is listening on port 7777");
     })
 }).catch((err)=>{
