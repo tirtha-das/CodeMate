@@ -1,5 +1,7 @@
 const {Server} = require("socket.io");
 const { Chat } = require("../models/chatModel");
+const jwt = require("jsonwebtoken");
+const {User} = require("../models/userModel")
 
 const initailizeServer = function(server){
   
@@ -7,8 +9,33 @@ const initailizeServer = function(server){
      origin:"http://localhost:5173",
      }})
 
+  io.use(async(socket,next)=>{
+    try{
+    const token = socket.handshake.auth.token;
+
+    if(!token){
+     throw new Error("Authentication error: Token Missing");
+     //next(err);
+    } 
+
+    const decodedMessage = jwt.verify(token,process.env.JWT_SECRET);
+    //console.log(decodedMessage);
+    
+    const loggedInUser = await User.findOne({_id:decodedMessage._id});
+    if(!loggedInUser){
+      throw new Error("Authentication error: Invalid token");
+     //next(err);
+    }
+    next();
+  }
+   catch(err){
+    next(err);
+   }
+  })
 
   io.on("connection",(socket)=>{
+    //console.log(socket.handshake.auth.token);
+    
     socket.on("joinChat",({userId,toUserId})=>{
       const roomId = [userId,toUserId].sort().join("$")
       //  console.log(roomId);
