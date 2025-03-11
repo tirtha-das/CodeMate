@@ -1,7 +1,8 @@
 const {Server} = require("socket.io");
 const { Chat } = require("../models/chatModel");
 const jwt = require("jsonwebtoken");
-const {User} = require("../models/userModel")
+const {User} = require("../models/userModel");
+const { Connections } = require("../models/connectionModel");
 
 const initailizeServer = function(server){
   
@@ -36,11 +37,25 @@ const initailizeServer = function(server){
   io.on("connection",(socket)=>{
     //console.log(socket.handshake.auth.token);
     
-    socket.on("joinChat",({userId,toUserId})=>{
+    socket.on("joinChat",async({userId,toUserId})=>{
+      try{
+      const connection = await Connections.findOne({
+        $or:[{fromUserId:userId,toUserId},    
+          {fromUserId:toUserId,toUserId:userId}]});
+      if(!connection || connection.status!=="accepted"){
+        throw new Error("Both of them are not friends");
+      }
+      console.log(connection);
+      
       const roomId = [userId,toUserId].sort().join("$")
       //  console.log(roomId);
        socket.join(roomId);
+      }catch(err){
+         socket.emit("notFriend",{err});
+      }
     });
+
+
 
     socket.on("sendMessage",async({userId,toUserId,firstName,text})=>{
       try{
