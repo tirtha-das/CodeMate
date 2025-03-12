@@ -133,10 +133,13 @@ userRouter.get("/user/details/:toUserId",userAuth,async(req,res)=>{
         select:USER_SAFE_DATA
 })
          const userData = data.map((user)=>{
+            // console.log(user.blockedBy);
+            const {fromUserId,toUserId,blockedBy} = user;
             if(user.fromUserId===loggedInUser._id){
-                return user.toUserId;
+                return {...toUserId.toObject(),blockedBy};
             }else{
-                return user.fromUserId;
+                
+                return {...fromUserId.toObject(),blockedBy};
             }
 
          })
