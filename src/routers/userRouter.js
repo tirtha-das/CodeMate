@@ -135,7 +135,9 @@ userRouter.get("/user/details/:toUserId",userAuth,async(req,res)=>{
          const userData = data.map((user)=>{
             // console.log(user.blockedBy);
             const {fromUserId,toUserId,blockedBy} = user;
-            if(user.fromUserId===loggedInUser._id){
+           // console.log(user.fromUserId._id+" "+loggedInUser._id);
+            
+            if(user.fromUserId._id.toString()===loggedInUser._id.toString()){
                 return {...toUserId.toObject(),blockedBy};
             }else{
                 

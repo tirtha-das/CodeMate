@@ -45,7 +45,7 @@ const initailizeServer = function(server){
       if(!connection || connection.status!=="accepted"){
         throw new Error("Both of them are not friends");
       }
-      console.log(connection);
+     // console.log(connection);
       
       const roomId = [userId,toUserId].sort().join("$")
       //  console.log(roomId);
@@ -60,7 +60,7 @@ const initailizeServer = function(server){
     socket.on("sendMessage",async({userId,toUserId,firstName,text})=>{
       try{
        const roomId = [userId,toUserId].sort().join("$");
-        // console.log(roomId);
+         //console.log(firstName+" : "+text);
         
        let chats = await Chat.findOne({
           participants:{$all:[userId,toUserId]}
@@ -76,7 +76,8 @@ const initailizeServer = function(server){
        chats.chatMessages.push({senderId:userId,text});
 
        await chats.save();
-
+       // console.log("chat is successfully saved");
+        
        io.to(roomId).emit("messageReceived",{fromUserId:userId,firstName,text});
       }catch(err){
         console.log(err);
