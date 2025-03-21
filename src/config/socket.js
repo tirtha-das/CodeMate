@@ -10,6 +10,8 @@ const initailizeServer = function(server){
      origin:"http://localhost:5173",
      }})
 
+     const onlineUsers = new Map();
+
   io.use(async(socket,next)=>{
     try{
     const token = socket.handshake.auth.token;
@@ -35,7 +37,14 @@ const initailizeServer = function(server){
   })
 
   io.on("connection",(socket)=>{
-    //console.log(socket.handshake.auth.token);
+   // console.log(socket.id);
+
+    socket.on("userOnline",async({userId})=>{
+     onlineUsers.set(userId,socket.id);
+     console.log(onlineUsers.size);
+     
+     io.emit("updateUserStatus",{userId,onlineStatus:true});
+    })
     
     socket.on("joinChat",async({userId,toUserId})=>{
       try{
@@ -87,7 +96,13 @@ const initailizeServer = function(server){
     })
 
     socket.on("disconnect",()=>{
-
+      const userId = [...onlineUsers.entries()].find(([_,id])=>{
+        return id === socket.id
+      })?.[0];
+      if(userId){
+        onlineUsers.delete(userId);
+        io.emit("updateUserStatus",{userId,onlineStatus:false});
+      }
     })
   })
 
