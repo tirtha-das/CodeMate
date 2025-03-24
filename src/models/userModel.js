@@ -57,7 +57,11 @@ const userSchema = new mongoose.Schema({
     },
     skills:[{
         type:String,
-    }]
+    }],
+    isOnline:{
+        type:Boolean,
+        default:false
+    }
 })
 
 userSchema.methods.getJWT = function(){

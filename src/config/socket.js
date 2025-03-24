@@ -40,10 +40,17 @@ const initailizeServer = function(server){
    // console.log(socket.id);
 
     socket.on("userOnline",async({userId})=>{
-     onlineUsers.set(userId,socket.id);
-     console.log(onlineUsers.size);
-     
-     io.emit("updateUserStatus",{userId,onlineStatus:true});
+      try{
+       onlineUsers.set(userId,socket.id);
+       const user = await User.findById(userId);
+       user.isOnline = true;
+       await user.save();
+       
+       io.emit("updateUserStatus",{userId,onlineStatus:true});
+      }catch(err){
+          console.log(err);
+          
+      }
     })
     
     socket.on("joinChat",async({userId,toUserId})=>{
