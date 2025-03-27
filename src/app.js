@@ -11,7 +11,7 @@ const {chatRouter} = require("./routers/chatRouter");
 const http = require("http");
 const {initailizeServer} = require('./config/socket');
 
-
+require("./utils/cronJob");
 
 
 const app = express();
