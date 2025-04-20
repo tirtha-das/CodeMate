@@ -102,14 +102,22 @@ const initailizeServer = function(server){
        
     })
 
-    socket.on("disconnect",()=>{
+    socket.on("disconnect",async()=>{
+      try{
       const userId = [...onlineUsers.entries()].find(([_,id])=>{
         return id === socket.id
       })?.[0];
       if(userId){
         onlineUsers.delete(userId);
+        const user = await User.findOne(userId);
+        user.isOnline = false;
+        await user.save();
         io.emit("updateUserStatus",{userId,onlineStatus:false});
       }
+    }catch(err){
+      console.log(err);
+      
+    }
     })
   })
 

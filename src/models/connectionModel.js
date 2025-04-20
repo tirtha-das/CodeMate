@@ -24,7 +24,7 @@ const connectionSchema = new mongoose.Schema({
         ref:"User",
         default: []
       }]
-})
+},{timestamps:true});
 
 const Connections  = mongoose.model("Connections",connectionSchema);
 
