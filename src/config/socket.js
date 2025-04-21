@@ -42,9 +42,9 @@ const initailizeServer = function(server){
     socket.on("userOnline",async({userId})=>{
       try{
        onlineUsers.set(userId,socket.id);
-       const user = await User.findById(userId);
-       user.isOnline = true;
-       await user.save();
+       const user = await User.findByIdAndUpdate(userId,{isOnline:true});
+      // user.isOnline = true;
+      // await user.save();
        
        io.emit("updateUserStatus",{userId,onlineStatus:true});
       }catch(err){
@@ -109,9 +109,9 @@ const initailizeServer = function(server){
       })?.[0];
       if(userId){
         onlineUsers.delete(userId);
-        const user = await User.findOne(userId);
-        user.isOnline = false;
-        await user.save();
+        const user = await User.findByIdAndUpdate(userId,{isOnline:false});
+       // user.isOnline = false;
+       // await user.save();
         io.emit("updateUserStatus",{userId,onlineStatus:false});
       }
     }catch(err){
