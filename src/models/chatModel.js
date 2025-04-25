@@ -14,12 +14,19 @@ const messageSchema = new mongoose.Schema({
 },{timestamps:true});
 
 const chatSchema  =  new mongoose.Schema({
+    chatName:{
+        type:String,
+        default:"Default"
+    },
    participants :[{
     type:mongoose.Schema.Types.ObjectId,
     ref:"User",
     required:true
    }],
-
+   isItGroup:{
+    type:Boolean,
+    default:false
+   },
    chatMessages:[{
     type:messageSchema,
     required:true

@@ -112,6 +112,7 @@ const initailizeServer = function(server){
         const user = await User.findByIdAndUpdate(userId,{isOnline:false});
        // user.isOnline = false;
        // await user.save();
+       
         io.emit("updateUserStatus",{userId,onlineStatus:false});
       }
     }catch(err){

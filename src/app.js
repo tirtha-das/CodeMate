@@ -10,6 +10,7 @@ const { userRouter } = require('./routers/userRouter');
 const {chatRouter} = require("./routers/chatRouter");
 const http = require("http");
 const {initailizeServer} = require('./config/socket');
+const {groupRouter} = require('./routers/groupRouter');
 
 require("./utils/cronJob");
 
@@ -31,6 +32,8 @@ app.use("/",connectionRouter);
 app.use("/",profileRouter);
 app.use("/",userRouter);
 app.use("/",chatRouter);
+app.use("/",groupRouter);
+
 const server = http.createServer(app);
 
 initailizeServer(server);
