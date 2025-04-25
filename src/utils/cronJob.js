@@ -8,8 +8,7 @@ const {Chat} = require("../models/chatModel");
 
 
 cron.schedule("0 8 * * *",async()=>{
-    // sendNotification("ishitabhowmick485@gmail.com","Good Morning Dear","Have a nice day");
-    // console.log("Mail is sended to ishita");
+   
     const yesterDay = subDays(new Date(),1);
     const yesterDayStart = startOfDay(yesterDay);
     const yesterDayEnd = endOfDay(yesterDay);
@@ -26,12 +25,10 @@ cron.schedule("0 8 * * *",async()=>{
         return user.toUserId.emailId;
     })
     
-    //console.log(pendingEmails);
-    //console.log("hello");
+   
     
     for(const email of pendingEmails){
         sendNotification(email,"Good Morning Dear","You have received some request , please check it");
-    //   console.log("Mail is sended to pending Emails");
     }
     
 })
@@ -60,9 +57,7 @@ console.log(inactiveUsers);
 
     if(msg!==null){
         sendNotification(user.emailId,"Good Morning Dear","You have received new message, please check it")
-        //console.log("msg send to tirtha");
-        
-    }
+        }
     
   }
 
